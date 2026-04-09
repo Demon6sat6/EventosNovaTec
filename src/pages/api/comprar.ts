@@ -24,7 +24,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   const codigoQr = randomUUID();
 
-  // Crear entrada en estado pendiente
+  // Crear entrada en estado pagado directamente (sin Stripe por ahora)
   const { data: entrada, error } = await db
     .from('entradas')
     .insert({
@@ -34,35 +34,13 @@ export const POST: APIRoute = async ({ request }) => {
       cantidad,
       total: evento.precio * cantidad,
       codigo_qr: codigoQr,
-      estado: evento.precio === 0 ? 'pagado' : 'pendiente',
+      estado: 'pagado',
     })
     .select()
     .single();
 
   if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500 });
 
-  // Evento gratuito: retornar directo
-  if (evento.precio === 0) {
-    return new Response(JSON.stringify({ entradaId: entrada.id }), { status: 200 });
-  }
-
-  // Evento de pago: crear sesión Stripe
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    line_items: [{
-      price_data: {
-        currency: 'pen',
-        product_data: { name: `${evento.titulo} x${cantidad}` },
-        unit_amount: Math.round(evento.precio * 100),
-      },
-      quantity: cantidad,
-    }],
-    mode: 'payment',
-    customer_email: email,
-    metadata: { entradaId: entrada.id },
-    success_url: `${import.meta.env.PUBLIC_SITE_URL}/entrada/${entrada.id}?success=1`,
-    cancel_url: `${import.meta.env.PUBLIC_SITE_URL}/eventos/${evento.slug}?cancelled=1`,
-  });
-
-  return new Response(JSON.stringify({ checkoutUrl: session.url }), { status: 200 });
+  // Retornar directo a la entrada (Stripe desactivado hasta configurar keys)
+  return new Response(JSON.stringify({ entradaId: entrada.id }), { status: 200 });
 };
