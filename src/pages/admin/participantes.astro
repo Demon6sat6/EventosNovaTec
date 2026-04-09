@@ -62,7 +62,7 @@ const estadoStyle: Record<string, string> = {
       {entradas.length > 0 ? (
         <div>
           {entradas.map((e, i) => (
-            <div style={`display:grid;grid-template-columns:1fr 1fr 60px 90px 100px 90px;padding:12px 20px;align-items:center;${i < entradas.length - 1 ? 'border-bottom:1px solid rgba(255,255,255,0.03);' : ''}transition:background 0.15s;`}
+            <div style={`display:grid;grid-template-columns:1fr 1fr 60px 90px 100px 90px 130px;padding:12px 20px;align-items:center;${i < entradas.length - 1 ? 'border-bottom:1px solid rgba(255,255,255,0.03);' : ''}transition:background 0.15s;`}
               onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
               <span style="color:white;font-size:13px;font-weight:500;">{e.nombre}</span>
               <span style="color:rgba(255,255,255,0.35);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{e.email}</span>
