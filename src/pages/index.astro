@@ -103,7 +103,7 @@ const { data: eventos } = await db
         <div style="width:32px;height:2px;background:linear-gradient(90deg,#7c3aed,#ec4899);"></div>
         <span style="color:#a78bfa;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:3px;">Próximos eventos</span>
       </div>
-      <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px;">
         <h2 style="font-size:clamp(36px,5vw,58px);font-weight:900;color:white;letter-spacing:-2px;line-height:1;font-family:'Space Grotesk',sans-serif;">
           Elige tu <span class="gradient-text">experiencia</span>
         </h2>
@@ -111,6 +111,15 @@ const { data: eventos } = await db
           <span style="width:6px;height:6px;background:#a78bfa;border-radius:50%;"></span>
           <span style="color:#a78bfa;font-size:12px;font-weight:600;">{eventos?.length ?? 0} disponibles</span>
         </div>
+      </div>
+      <!-- Buscador -->
+      <div style="position:relative;max-width:480px;">
+        <svg style="position:absolute;left:16px;top:50%;transform:translateY(-50%);opacity:0.3;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input id="buscador" type="text" placeholder="Buscar eventos..."
+          style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:white;border-radius:12px;padding:12px 16px 12px 44px;font-size:14px;outline:none;font-family:inherit;box-sizing:border-box;transition:border-color 0.2s;"
+          onfocus="this.style.borderColor='rgba(124,58,237,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" />
       </div>
     </div>
 
@@ -254,6 +263,18 @@ const { data: eventos } = await db
     });
   }, { threshold: 0.08 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Búsqueda de eventos
+  const buscador = document.getElementById('buscador') as HTMLInputElement;
+  const cards    = document.querySelectorAll('[data-titulo]');
+  buscador?.addEventListener('input', () => {
+    const q = buscador.value.toLowerCase();
+    cards.forEach(card => {
+      const titulo = (card as HTMLElement).dataset.titulo?.toLowerCase() ?? '';
+      const lugar  = (card as HTMLElement).dataset.lugar?.toLowerCase()  ?? '';
+      (card as HTMLElement).style.display = (titulo.includes(q) || lugar.includes(q)) ? '' : 'none';
+    });
+  });
 
   document.querySelectorAll('.card-3d').forEach(card => {
     card.addEventListener('mousemove', (e: any) => {
