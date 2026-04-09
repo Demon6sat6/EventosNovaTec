@@ -1,52 +1,23 @@
-import { createServerClient } from './supabase';
-
 const SESSION_COOKIE = 'admin_session';
+const SESSION_VALUE  = 'authenticated';
 
-export interface AdminUser {
-  id: string;
-  email: string;
-  nombre: string | null;
-  rol: 'superadmin' | 'admin';
-}
-
-// Verifica credenciales contra admin_users usando bcrypt (pgcrypto)
-export async function isValidCredentials(email: string, password: string): Promise<AdminUser | null> {
-  const db = createServerClient();
-  const { data, error } = await db.rpc('verify_admin_password', {
-    p_email: email,
-    p_password: password,
-  });
-  if (error || !data || data.length === 0) return null;
-  return data[0] as AdminUser;
+export function isValidCredentials(email: string, password: string): boolean {
+  return (
+    email    === import.meta.env.ADMIN_EMAIL &&
+    password === import.meta.env.ADMIN_PASSWORD
+  );
 }
 
 export function isAuthenticated(cookies: { get: (name: string) => { value: string } | undefined }): boolean {
-  const cookie = cookies.get(SESSION_COOKIE);
-  if (!cookie?.value) return false;
-  try {
-    const data = JSON.parse(atob(cookie.value));
-    return !!data.id && !!data.email;
-  } catch {
-    return false;
-  }
+  return cookies.get(SESSION_COOKIE)?.value === SESSION_VALUE;
 }
 
-export function getSessionUser(cookies: { get: (name: string) => { value: string } | undefined }): AdminUser | null {
-  const cookie = cookies.get(SESSION_COOKIE);
-  if (!cookie?.value) return null;
-  try {
-    return JSON.parse(atob(cookie.value)) as AdminUser;
-  } catch {
-    return null;
-  }
-}
-
-export function setSessionCookie(cookies: { set: Function }, user: AdminUser): void {
-  const payload = btoa(JSON.stringify(user));
-  cookies.set(SESSION_COOKIE, payload, {
+export function setSessionCookie(cookies: { set: Function }): void {
+  cookies.set(SESSION_COOKIE, SESSION_VALUE, {
     path: '/',
     httpOnly: true,
     sameSite: 'lax',
+    secure: import.meta.env.PROD,
     maxAge: 60 * 60 * 8,
   });
 }
