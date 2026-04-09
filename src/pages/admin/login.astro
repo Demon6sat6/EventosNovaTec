@@ -13,8 +13,9 @@ if (Astro.request.method === 'POST') {
   const email    = (form.get('email')    as string) ?? '';
   const password = (form.get('password') as string) ?? '';
 
-  if (isValidCredentials(email, password)) {
-    setSessionCookie(Astro.cookies);
+  const user = await isValidCredentials(email, password);
+  if (user) {
+    setSessionCookie(Astro.cookies, user);
     return Astro.redirect('/admin');
   } else {
     error = 'Credenciales incorrectas';

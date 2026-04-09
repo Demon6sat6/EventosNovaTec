@@ -9,23 +9,15 @@ export interface AdminUser {
   rol: 'superadmin' | 'admin';
 }
 
-// Verifica credenciales contra la tabla admin_users (bcrypt via pgcrypto)
+// Verifica credenciales contra admin_users usando bcrypt (pgcrypto)
 export async function isValidCredentials(email: string, password: string): Promise<AdminUser | null> {
   const db = createServerClient();
-  const { data } = await db
-    .from('admin_users')
-    .select('id, email, nombre, rol')
-    .eq('email', email)
-    .eq('activo', true)
-    .filter('password_hash', 'eq', db.rpc('crypt_check', { plain: password, hashed: '' }) as any)
-    .single();
-
-  // Usamos RPC para comparar con bcrypt
-  const { data: user } = await db
-    .rpc('verify_admin_password', { p_email: email, p_password: password })
-    .single();
-
-  return (user as AdminUser) ?? null;
+  const { data, error } = await db.rpc('verify_admin_password', {
+    p_email: email,
+    p_password: password,
+  });
+  if (error || !data || data.length === 0) return null;
+  return data[0] as AdminUser;
 }
 
 export function isAuthenticated(cookies: { get: (name: string) => { value: string } | undefined }): boolean {
@@ -55,7 +47,7 @@ export function setSessionCookie(cookies: { set: Function }, user: AdminUser): v
     path: '/',
     httpOnly: true,
     sameSite: 'lax',
-    maxAge: 60 * 60 * 8, // 8 horas
+    maxAge: 60 * 60 * 8,
   });
 }
 
