@@ -1,11 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { supabase } from '../../lib/supabase';
+import { createServerClient } from '../../lib/supabase';
 import QRDisplay from '../../components/QRDisplay';
 
 const { id } = Astro.params;
-
-const { data: entrada } = await supabase
+const db = createServerClient();
+const { data: entrada } = await db
   .from('entradas')
   .select('*, evento:eventos(*)')
   .eq('id', id)
