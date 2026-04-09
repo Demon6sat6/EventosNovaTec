@@ -40,7 +40,7 @@ export default function Countdown({ fecha }: Props) {
       <p style={{ color:'rgba(255,255,255,0.3)', fontSize:'11px', textTransform:'uppercase', letterSpacing:'1.5px', marginBottom:'10px', textAlign:'center' }}>
         Faltan
       </p>
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'8px' }}>
+      <div className="countdown-grid">
         {bloques.map(b => (
           <div key={b.label} style={{ background:'rgba(124,58,237,0.08)', border:'1px solid rgba(124,58,237,0.15)', borderRadius:'12px', padding:'12px 8px', textAlign:'center' }}>
             <p style={{ color:'white', fontWeight:900, fontSize:'24px', lineHeight:1, marginBottom:'4px', fontVariantNumeric:'tabular-nums' }}>
