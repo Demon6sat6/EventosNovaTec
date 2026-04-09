@@ -113,7 +113,10 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL ?? 'http://localhost:4321';
             </p>
           </div>
           <div style="padding:24px;">
-            {disponibles > 0
+            <!-- Countdown -->
+          <Countdown client:load fecha={evento.fecha} />
+
+          {disponibles > 0
               ? <BuyTicket client:load eventoId={evento.id} eventoTitulo={evento.titulo} precio={evento.precio} disponibles={disponibles} />
               : <div style="text-align:center;padding:24px 0;">
                   <p style="font-size:40px;margin-bottom:8px;">😔</p>
