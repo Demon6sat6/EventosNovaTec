@@ -60,7 +60,7 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL ?? 'http://localhost:4321';
       <div style="display:flex;flex-direction:column;gap:24px;">
 
         <!-- Meta info -->
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
+        <div class="meta-grid">
           {[
             { icon:'📍', label:'Lugar', value: evento.lugar },
             { icon:'🕐', label:'Hora', value: new Date(evento.fecha).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}) },
@@ -135,3 +135,12 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL ?? 'http://localhost:4321';
     }
   </style>
 </Layout>
+
+<style>
+  .evento-grid { display: grid; grid-template-columns: 1fr 380px; gap: 40px; align-items: start; }
+  @media (max-width: 900px) { .evento-grid { grid-template-columns: 1fr; } }
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 480px) { .meta-grid { grid-template-columns: 1fr; } }
+  .hero-pad { padding: 0 20px 36px; }
+  @media (min-width: 768px) { .hero-pad { padding: 0 40px 48px; } }
+</style>
