@@ -63,7 +63,6 @@ export default function BuyTicket({ eventoId, eventoTitulo, precio, disponibles 
       setLoading(false);
     }
   }
-
   return (
     <form onSubmit={handleSubmit}>
 
