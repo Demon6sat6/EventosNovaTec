@@ -1,7 +1,11 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getSessionUser } from '../../lib/auth';
 
-const adminEmail = import.meta.env.ADMIN_EMAIL ?? 'admin@eventosapp.com';
+const user = getSessionUser(Astro.cookies);
+const adminEmail  = user?.email  ?? 'admin@eventosapp.com';
+const adminNombre = user?.nombre ?? adminEmail;
+const adminRol    = user?.rol    ?? 'admin';
 ---
 <AdminLayout title="Mi Perfil">
   <div style="max-width:640px;display:flex;flex-direction:column;gap:20px;">
