@@ -1,16 +1,12 @@
 ---
 import '../styles/global.css';
-import { getSessionUser } from '../lib/auth';
 
 interface Props { title: string; }
 const { title } = Astro.props;
 const path = Astro.url.pathname;
 
-const sessionUser = getSessionUser(Astro.cookies);
-const userEmail   = sessionUser?.email ?? 'admin@eventosapp.com';
-const userName    = sessionUser?.nombre ?? userEmail;
-const userInitial = userName.charAt(0).toUpperCase();
-const isSuperAdmin = sessionUser?.rol === 'superadmin';
+const userEmail   = import.meta.env.ADMIN_EMAIL ?? 'admin@eventosapp.com';
+const userInitial = userEmail.charAt(0).toUpperCase();
 
 const navItems = [
   { href: '/admin',               icon: '⚡', label: 'Dashboard',    exact: true  },
