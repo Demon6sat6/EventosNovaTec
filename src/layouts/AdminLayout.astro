@@ -153,8 +153,8 @@ const accountItems = [
           {userInitial}
         </div>
         <div style="flex:1;min-width:0;">
-          <p style="color:white;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{userEmail}</p>
-          <p style="color:rgba(255,255,255,0.3);font-size:11px;">Administrador</p>
+          <p style="color:white;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{userName !== userEmail ? userName : userEmail}</p>
+          <p style="color:rgba(255,255,255,0.3);font-size:11px;">{sessionUser?.rol ?? 'admin'}</p>
         </div>
         <form method="POST" action="/api/auth/logout" style="flex-shrink:0;">
           <button type="submit" title="Cerrar sesión"
