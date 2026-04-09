@@ -56,20 +56,20 @@ export default function BuyTicket({ eventoId, eventoTitulo, precio, disponibles 
       // Armar mensaje de WhatsApp
       const totalTexto = precio === 0 ? 'GRATIS' : `S/ ${(precio * cantidad).toFixed(2)}`;
       const msg = encodeURIComponent(
-        `🎟 *Nueva compra - EventosApp*\n\n` +
+        `🎟 *Nueva reserva - EventosApp*\n\n` +
         `*Evento:* ${eventoTitulo}\n` +
         `*Asistente:* ${nombre}\n` +
         `*Email:* ${email}\n` +
         `*Cantidad:* ${cantidad} entrada${cantidad > 1 ? 's' : ''}\n` +
         `*Total:* ${totalTexto}\n` +
-        `*ID Entrada:* ${data.entradaId}\n\n` +
-        `Ver entrada: ${window.location.origin}/entrada/${data.entradaId}`
+        `*ID Reserva:* ${data.entradaId}\n\n` +
+        `_Una vez confirmado el pago, recibirás tu código QR de acceso._`
       );
 
-      // Abrir WhatsApp en nueva pestaña
+      // Abrir WhatsApp
       window.open(`https://wa.me/51993034435?text=${msg}`, '_blank');
 
-      // Redirigir a la entrada
+      // Redirigir a página de espera
       window.location.href = `/entrada/${data.entradaId}`;
     } catch (err: any) {
       setError(err.message);
