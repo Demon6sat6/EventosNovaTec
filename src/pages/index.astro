@@ -122,7 +122,7 @@ const { data: eventos } = await db
     </div>
 
     {eventos && eventos.length > 0 ? (
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:28px;">
+      <div class="eventos-grid">
         {eventos.map((evento, idx) => (
           <a href={`/eventos/${evento.slug}`}
             class="reveal card-3d neon-card"
