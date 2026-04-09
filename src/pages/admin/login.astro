@@ -1,7 +1,6 @@
 ---
 import { isAuthenticated, isValidCredentials, setSessionCookie } from '../../lib/auth';
 
-// Si ya está autenticado, redirigir
 if (isAuthenticated(Astro.cookies)) {
   return Astro.redirect('/admin');
 }
@@ -9,13 +8,12 @@ if (isAuthenticated(Astro.cookies)) {
 let error = '';
 
 if (Astro.request.method === 'POST') {
-  const form = await Astro.request.formData();
+  const form     = await Astro.request.formData();
   const email    = (form.get('email')    as string) ?? '';
   const password = (form.get('password') as string) ?? '';
 
-  const user = await isValidCredentials(email, password);
-  if (user) {
-    setSessionCookie(Astro.cookies, user);
+  if (isValidCredentials(email, password)) {
+    setSessionCookie(Astro.cookies);
     return Astro.redirect('/admin');
   } else {
     error = 'Credenciales incorrectas';
