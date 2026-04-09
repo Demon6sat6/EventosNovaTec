@@ -1,12 +1,16 @@
 ---
 import '../styles/global.css';
+import { getSessionUser } from '../lib/auth';
 
 interface Props { title: string; }
 const { title } = Astro.props;
 const path = Astro.url.pathname;
 
-const userEmail   = import.meta.env.ADMIN_EMAIL ?? 'admin@eventosapp.com';
-const userInitial = userEmail.charAt(0).toUpperCase();
+const user        = getSessionUser(Astro.cookies);
+const userEmail   = user?.email   ?? 'admin@eventosapp.com';
+const userNombre  = user?.nombre  ?? userEmail;
+const userInitial = userNombre.charAt(0).toUpperCase();
+const isSuperAdmin = user?.rol === 'superadmin';
 
 const navItems = [
   { href: '/admin',               icon: '⚡', label: 'Dashboard',    exact: true  },
@@ -16,8 +20,9 @@ const navItems = [
   { href: '/admin/reportes',      icon: '📊', label: 'Reportes',     exact: false },
 ];
 const accountItems = [
-  { href: '/admin/perfil',         icon: '👤', label: 'Mi perfil'     },
-  { href: '/admin/configuracion',  icon: '⚙️', label: 'Configuración' },
+  { href: '/admin/perfil',        icon: '👤', label: 'Mi perfil'     },
+  ...(isSuperAdmin ? [{ href: '/admin/usuarios', icon: '🔐', label: 'Usuarios' }] : []),
+  { href: '/admin/configuracion', icon: '⚙️', label: 'Configuración' },
 ];
 ---
 <!doctype html>
