@@ -24,7 +24,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   const codigoQr = randomUUID();
 
-  // Crear entrada en estado pagado directamente (sin Stripe por ahora)
+  // Crear entrada en estado PENDIENTE — el QR se activa cuando el admin confirme el pago
   const { data: entrada, error } = await db
     .from('entradas')
     .insert({
@@ -34,13 +34,12 @@ export const POST: APIRoute = async ({ request }) => {
       cantidad,
       total: evento.precio * cantidad,
       codigo_qr: codigoQr,
-      estado: 'pagado',
+      estado: 'pendiente',
     })
     .select()
     .single();
 
   if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500 });
 
-  // Retornar directo a la entrada (Stripe desactivado hasta configurar keys)
   return new Response(JSON.stringify({ entradaId: entrada.id }), { status: 200 });
 };
