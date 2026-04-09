@@ -23,22 +23,29 @@ const adminEmail = import.meta.env.ADMIN_EMAIL ?? 'admin@eventosapp.com';
       </div>
     </div>
 
-    <!-- Cambiar credenciales -->
-    <div class="bg-[#0f0f1a] border border-white/5 rounded-2xl p-6">
-      <h3 class="text-white font-bold mb-1">Cambiar credenciales</h3>
-      <p class="text-white/30 text-sm mb-5">
-        Las credenciales se gestionan desde el archivo <code class="bg-white/5 px-1.5 py-0.5 rounded text-violet-300">.env</code> del proyecto.
-      </p>
+    <!-- Credenciales -->
+    <div class="bg-[#0f0f1a] border border-white/5 rounded-2xl p-6 space-y-4">
+      <h3 class="text-white font-bold mb-1">Credenciales de acceso</h3>
 
-      <div class="bg-[#080810] border border-white/5 rounded-xl p-4 font-mono text-sm space-y-1">
-        <p class="text-white/20 text-xs mb-2"># .env</p>
-        <p><span class="text-violet-400">ADMIN_EMAIL</span><span class="text-white/40">=</span><span class="text-green-400">{adminEmail}</span></p>
-        <p><span class="text-violet-400">ADMIN_PASSWORD</span><span class="text-white/40">=</span><span class="text-white/30">••••••••</span></p>
+      <div class="space-y-3">
+        <div class="flex items-center justify-between bg-[#080810] border border-white/5 rounded-xl px-4 py-3">
+          <div>
+            <p class="text-white/30 text-xs mb-0.5">Correo electrónico</p>
+            <p class="text-white text-sm font-medium">{adminEmail}</p>
+          </div>
+          <span class="text-white/20 text-xs">Email</span>
+        </div>
+
+        <div class="flex items-center justify-between bg-[#080810] border border-white/5 rounded-xl px-4 py-3">
+          <div>
+            <p class="text-white/30 text-xs mb-0.5">Contraseña</p>
+            <p class="text-white text-sm font-medium tracking-widest">••••••••</p>
+          </div>
+          <span class="text-white/20 text-xs">Password</span>
+        </div>
       </div>
 
-      <p class="text-white/20 text-xs mt-3">
-        Edita el archivo <code class="text-violet-300">.env</code>, cambia los valores y reinicia el servidor para aplicar los cambios.
-      </p>
+      <p class="text-white/20 text-xs">Para cambiar las credenciales, actualiza las variables de entorno en el servidor.</p>
     </div>
 
     <!-- Cerrar sesión -->
