@@ -1,13 +1,14 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { supabase } from '../../lib/supabase';
+import { createServerClient } from '../../lib/supabase';
 import BuyTicket from '../../components/BuyTicket';
 
 const { slug } = Astro.params;
-const { data: evento } = await supabase.from('eventos').select('*').eq('slug', slug).eq('publicado', true).single();
+const db = createServerClient();
+const { data: evento } = await db.from('eventos').select('*').eq('slug', slug).eq('publicado', true).single();
 if (!evento) return Astro.redirect('/');
 
-const { count } = await supabase.from('entradas').select('*', { count: 'exact', head: true }).eq('evento_id', evento.id).in('estado', ['pagado', 'asistio']);
+const { count } = await db.from('entradas').select('*', { count: 'exact', head: true }).eq('evento_id', evento.id).in('estado', ['pagado', 'asistio']);
 const disponibles = evento.capacidad - (count ?? 0);
 const pct = Math.round(((count ?? 0) / evento.capacidad) * 100);
 ---
