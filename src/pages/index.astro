@@ -57,7 +57,7 @@ const { data: eventos } = await db
         Descubre experiencias extraordinarias. Compra entradas con tecnología QR y accede a los mejores eventos de la ciudad.
       </p>
 
-      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:72px;">
+      <div class="cta-btns">
         <a href="#eventos" class="btn-primary"
           style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#7c3aed,#ec4899);color:white;font-weight:700;font-size:14px;padding:16px 36px;border-radius:100px;text-decoration:none;box-shadow:0 8px 32px rgba(124,58,237,0.4),inset 0 1px 0 rgba(255,255,255,0.2);letter-spacing:0.5px;">
           <span>Explorar eventos</span>
@@ -69,13 +69,13 @@ const { data: eventos } = await db
         </a>
       </div>
 
-      <div style="display:flex;gap:0;border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;backdrop-filter:blur(10px);background:rgba(255,255,255,0.02);width:fit-content;">
+      <div class="stats-row">
         {[
           { num: eventos?.length ?? 0, label: 'Eventos activos' },
           { num: '100%', label: 'Pago seguro' },
           { num: 'QR', label: 'Entrada digital' },
         ].map((s, i) => (
-          <div style={`padding:18px 28px;text-align:center;${i < 2 ? 'border-right:1px solid rgba(255,255,255,0.06);' : ''}`}>
+          <div style={`padding:18px 24px;text-align:center;${i < 2 ? 'border-right:1px solid rgba(255,255,255,0.06);' : ''}`}>
             <p style="font-size:26px;font-weight:900;background:linear-gradient(135deg,#a78bfa,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;">{s.num}</p>
             <p style="color:rgba(255,255,255,0.25);font-size:11px;margin-top:4px;letter-spacing:1px;text-transform:uppercase;">{s.label}</p>
           </div>
