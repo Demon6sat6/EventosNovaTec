@@ -52,11 +52,25 @@ export default function BuyTicket({ eventoId, eventoTitulo, precio, disponibles 
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error al procesar');
-      if (precio === 0) {
-        window.location.href = `/entrada/${data.entradaId}`;
-      } else {
-        window.location.href = data.checkoutUrl;
-      }
+
+      // Armar mensaje de WhatsApp
+      const totalTexto = precio === 0 ? 'GRATIS' : `S/ ${(precio * cantidad).toFixed(2)}`;
+      const msg = encodeURIComponent(
+        `🎟 *Nueva compra - EventosApp*\n\n` +
+        `*Evento:* ${eventoTitulo}\n` +
+        `*Asistente:* ${nombre}\n` +
+        `*Email:* ${email}\n` +
+        `*Cantidad:* ${cantidad} entrada${cantidad > 1 ? 's' : ''}\n` +
+        `*Total:* ${totalTexto}\n` +
+        `*ID Entrada:* ${data.entradaId}\n\n` +
+        `Ver entrada: ${window.location.origin}/entrada/${data.entradaId}`
+      );
+
+      // Abrir WhatsApp en nueva pestaña
+      window.open(`https://wa.me/51993034435?text=${msg}`, '_blank');
+
+      // Redirigir a la entrada
+      window.location.href = `/entrada/${data.entradaId}`;
     } catch (err: any) {
       setError(err.message);
     } finally {
