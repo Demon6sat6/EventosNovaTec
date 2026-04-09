@@ -1,0 +1,79 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { createServerClient } from '../../lib/supabase';
+
+const db = createServerClient();
+const { data: ventasPorEvento } = await db
+  .from('entradas')
+  .select('evento_id, total, cantidad, estado, evento:eventos(titulo)')
+  .in('estado', ['pagado', 'asistio']);
+
+const resumen: Record<string, { titulo: string; entradas: number; asistentes: number; ingresos: number }> = {};
+for (const e of ventasPorEvento ?? []) {
+  const id = e.evento_id;
+  const titulo = (e.evento as any)?.titulo ?? 'Sin nombre';
+  if (!resumen[id]) resumen[id] = { titulo, entradas: 0, asistentes: 0, ingresos: 0 };
+  resumen[id].entradas += e.cantidad ?? 0;
+  resumen[id].ingresos += e.total ?? 0;
+  if (e.estado === 'asistio') resumen[id].asistentes += e.cantidad ?? 0;
+}
+
+const filas = Object.values(resumen);
+const totalIngresos  = filas.reduce((s, f) => s + f.ingresos, 0);
+const totalEntradas  = filas.reduce((s, f) => s + f.entradas, 0);
+const totalAsistentes = filas.reduce((s, f) => s + f.asistentes, 0);
+---
+<AdminLayout title="Reportes de Ventas">
+
+  <!-- Totales -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:28px;">
+    {[
+      { label:'Ingresos totales',       value:`S/ ${totalIngresos.toFixed(2)}`,  icon:'💰', color:'#22c55e', bg:'rgba(34,197,94,0.1)',   border:'rgba(34,197,94,0.2)'   },
+      { label:'Entradas vendidas',      value: totalEntradas,                    icon:'🎟', color:'#a78bfa', bg:'rgba(124,58,237,0.1)',  border:'rgba(124,58,237,0.2)'  },
+      { label:'Asistentes confirmados', value: totalAsistentes,                  icon:'👥', color:'#4ade80', bg:'rgba(34,197,94,0.08)',  border:'rgba(34,197,94,0.15)'  },
+    ].map(s => (
+      <div style={`background:${s.bg};border:1px solid ${s.border};border-radius:16px;padding:20px 22px;`}>
+        <p style="color:rgba(255,255,255,0.3);font-size:11px;margin-bottom:8px;">{s.icon} {s.label}</p>
+        <p style={`font-size:30px;font-weight:900;color:${s.color};`}>{s.value}</p>
+      </div>
+    ))}
+  </div>
+
+  <!-- Tabla -->
+  <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden;">
+    <div style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06);">
+      <p style="color:white;font-weight:600;font-size:14px;">Ventas por evento</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 100px 100px 80px 120px;padding:10px 20px;border-bottom:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.01);">
+      {['Evento','Entradas','Asistentes','Tasa','Ingresos'].map(h => (
+        <span style="color:rgba(255,255,255,0.2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">{h}</span>
+      ))}
+    </div>
+
+    {filas.length > 0 ? (
+      <div>
+        {filas.map((f, i) => {
+          const tasa = f.entradas > 0 ? Math.round((f.asistentes / f.entradas) * 100) : 0;
+          const tasaColor = tasa >= 80 ? '#4ade80' : tasa >= 50 ? '#fbbf24' : 'rgba(255,255,255,0.3)';
+          return (
+            <div style={`display:grid;grid-template-columns:1fr 100px 100px 80px 120px;padding:14px 20px;align-items:center;${i < filas.length - 1 ? 'border-bottom:1px solid rgba(255,255,255,0.03);' : ''}transition:background 0.15s;`}
+              onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+              <span style="color:white;font-size:13px;font-weight:500;">{f.titulo}</span>
+              <span style="color:rgba(255,255,255,0.5);font-size:13px;">{f.entradas}</span>
+              <span style="color:rgba(255,255,255,0.5);font-size:13px;">{f.asistentes}</span>
+              <span style={`font-size:13px;font-weight:700;color:${tasaColor};`}>{tasa}%</span>
+              <span style="color:#4ade80;font-size:13px;font-weight:700;">S/ {f.ingresos.toFixed(2)}</span>
+            </div>
+          );
+        })}
+      </div>
+    ) : (
+      <div style="text-align:center;padding:48px;">
+        <p style="font-size:36px;margin-bottom:8px;opacity:0.3;">📊</p>
+        <p style="color:rgba(255,255,255,0.2);font-size:13px;">No hay ventas registradas</p>
+      </div>
+    )}
+  </div>
+
+</AdminLayout>

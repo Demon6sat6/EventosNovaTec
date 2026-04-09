@@ -1,0 +1,94 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabase } from '../../lib/supabase';
+import QRDisplay from '../../components/QRDisplay';
+
+const { id } = Astro.params;
+
+const { data: entrada } = await supabase
+  .from('entradas')
+  .select('*, evento:eventos(*)')
+  .eq('id', id)
+  .single();
+
+if (!entrada) return Astro.redirect('/');
+
+const estadoConfig: Record<string, { color: string; label: string; icon: string }> = {
+  pagado:   { color: 'text-violet-400 bg-violet-500/10 border-violet-500/30', label: 'Confirmado', icon: '✅' },
+  asistio:  { color: 'text-green-400 bg-green-500/10 border-green-500/30',    label: 'Asistió',    icon: '🎉' },
+  pendiente:{ color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30', label: 'Pendiente',  icon: '⏳' },
+  cancelado:{ color: 'text-red-400 bg-red-500/10 border-red-500/30',          label: 'Cancelado',  icon: '❌' },
+};
+const estado = estadoConfig[entrada.estado] ?? estadoConfig.pendiente;
+---
+<Layout title="Tu Entrada">
+  <section class="bg-[#080810] min-h-screen py-16">
+    <div class="max-w-md mx-auto px-4">
+
+      <!-- Ticket card -->
+      <div class="bg-[#0f0f1a] border border-white/10 rounded-3xl overflow-hidden shadow-2xl shadow-violet-500/10">
+
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-violet-700 to-pink-700 p-6 text-center relative overflow-hidden">
+          <div class="absolute inset-0 opacity-20"
+            style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 20px 20px;">
+          </div>
+          <p class="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">Entrada para</p>
+          <h1 class="text-white text-2xl font-black relative">{entrada.evento?.titulo}</h1>
+        </div>
+
+        <!-- Separador con círculos -->
+        <div class="relative flex items-center">
+          <div class="w-6 h-6 bg-[#080810] rounded-full -ml-3 border-r border-white/10"></div>
+          <div class="flex-1 border-t border-dashed border-white/10"></div>
+          <div class="w-6 h-6 bg-[#080810] rounded-full -mr-3 border-l border-white/10"></div>
+        </div>
+
+        <!-- Info -->
+        <div class="px-6 py-5 space-y-3">
+          {[
+            { label: 'Fecha', value: new Date(entrada.evento?.fecha).toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' }) },
+            { label: 'Lugar', value: entrada.evento?.lugar },
+            { label: 'Asistente', value: entrada.nombre },
+            { label: 'Email', value: entrada.email },
+            { label: 'Cantidad', value: `${entrada.cantidad} entrada(s)` },
+          ].map(item => (
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-white/40">{item.label}</span>
+              <span class="text-white font-medium text-right max-w-[60%] truncate">{item.value}</span>
+            </div>
+          ))}
+
+          <!-- Estado -->
+          <div class="flex justify-between items-center text-sm pt-1">
+            <span class="text-white/40">Estado</span>
+            <span class={`px-3 py-1 rounded-full text-xs font-bold border ${estado.color}`}>
+              {estado.icon} {estado.label}
+            </span>
+          </div>
+        </div>
+
+        <!-- Separador -->
+        <div class="relative flex items-center">
+          <div class="w-6 h-6 bg-[#080810] rounded-full -ml-3 border-r border-white/10"></div>
+          <div class="flex-1 border-t border-dashed border-white/10"></div>
+          <div class="w-6 h-6 bg-[#080810] rounded-full -mr-3 border-l border-white/10"></div>
+        </div>
+
+        <!-- QR -->
+        <div class="px-6 py-6 flex flex-col items-center gap-3">
+          <p class="text-white/40 text-xs">Presenta este código en la entrada</p>
+          <div class="bg-white p-3 rounded-2xl">
+            <QRDisplay client:load codigo={entrada.codigo_qr} />
+          </div>
+          <p class="text-white/20 text-xs font-mono">{entrada.codigo_qr}</p>
+        </div>
+
+      </div>
+
+      <p class="text-center text-white/20 text-xs mt-6">
+        Guarda esta página o toma una captura de pantalla
+      </p>
+    </div>
+  </section>
+</Layout>

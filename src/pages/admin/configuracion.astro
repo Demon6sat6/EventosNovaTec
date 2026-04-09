@@ -1,0 +1,67 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+<AdminLayout title="Configuración">
+  <div class="max-w-2xl space-y-6">
+
+    <!-- Info del sistema -->
+    <div class="bg-[#0f0f1a] border border-white/5 rounded-2xl p-6">
+      <h3 class="text-white font-bold mb-4">Información del sistema</h3>
+      <div class="space-y-3 text-sm">
+        {[
+          { label: 'Versión', value: '1.0.0' },
+          { label: 'Framework', value: 'Astro + React' },
+          { label: 'Base de datos', value: 'Supabase (PostgreSQL)' },
+          { label: 'Pagos', value: 'Stripe' },
+          { label: 'Entorno', value: import.meta.env.MODE },
+        ].map(item => (
+          <div class="flex justify-between items-center py-2 border-b border-white/5 last:border-0">
+            <span class="text-white/40">{item.label}</span>
+            <span class="text-white font-medium text-xs bg-white/5 px-3 py-1 rounded-full">{item.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Variables de entorno (estado) -->
+    <div class="bg-[#0f0f1a] border border-white/5 rounded-2xl p-6">
+      <h3 class="text-white font-bold mb-4">Estado de servicios</h3>
+      <div class="space-y-3">
+        {[
+          { label: 'Supabase URL', ok: !!import.meta.env.PUBLIC_SUPABASE_URL },
+          { label: 'Supabase Anon Key', ok: !!import.meta.env.PUBLIC_SUPABASE_ANON_KEY },
+          { label: 'Stripe Secret Key', ok: !!import.meta.env.STRIPE_SECRET_KEY },
+          { label: 'Site URL', ok: !!import.meta.env.PUBLIC_SITE_URL },
+        ].map(item => (
+          <div class="flex justify-between items-center py-2 border-b border-white/5 last:border-0 text-sm">
+            <span class="text-white/40">{item.label}</span>
+            <span class={`text-xs font-semibold px-3 py-1 rounded-full border ${item.ok ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>
+              {item.ok ? '✓ Configurado' : '✗ Falta configurar'}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Links útiles -->
+    <div class="bg-[#0f0f1a] border border-white/5 rounded-2xl p-6">
+      <h3 class="text-white font-bold mb-4">Links rápidos</h3>
+      <div class="grid grid-cols-2 gap-3">
+        {[
+          { label: 'Supabase Dashboard', url: 'https://supabase.com/dashboard', icon: '🗄️' },
+          { label: 'Stripe Dashboard', url: 'https://dashboard.stripe.com', icon: '💳' },
+          { label: 'Ver sitio público', url: '/', icon: '🌐' },
+          { label: 'Documentación Astro', url: 'https://docs.astro.build', icon: '📚' },
+        ].map(item => (
+          <a href={item.url} target="_blank" rel="noopener"
+            class="flex items-center gap-3 bg-white/3 hover:bg-white/6 border border-white/5 hover:border-white/10 rounded-xl p-3.5 transition group">
+            <span class="text-lg">{item.icon}</span>
+            <span class="text-white/60 group-hover:text-white text-sm transition">{item.label}</span>
+            <span class="ml-auto text-white/20 group-hover:text-white/40 text-xs">↗</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</AdminLayout>
