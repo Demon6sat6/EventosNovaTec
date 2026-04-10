@@ -281,13 +281,15 @@ const { data: eventos } = await db
     canvas.width = W; canvas.height = H;
 
     const isMobile = W < 768;
-    const COUNT = isMobile ? 30 : 70;
+    const COUNT = isMobile ? 25 : 60;
+    // Velocidad muy reducida en móvil para evitar el efecto "crack"
+    const speed = isMobile ? 0.08 : 0.25;
     const particles = Array.from({ length: COUNT }, () => ({
       x: Math.random() * W, y: Math.random() * H,
       r: Math.random() * 1.2 + 0.3,
-      vx: (Math.random() - 0.5) * 0.25,
-      vy: (Math.random() - 0.5) * 0.18,
-      a: Math.random() * 0.45 + 0.15,
+      vx: (Math.random() - 0.5) * speed,
+      vy: (Math.random() - 0.5) * speed * 0.7,
+      a: Math.random() * 0.4 + 0.1,
       c: Math.random() > 0.5 ? '124,58,237' : '236,72,153',
     }));
 
@@ -300,13 +302,21 @@ const { data: eventos } = await db
       canvas.width = W; canvas.height = H;
     }, { passive: true });
 
+    // Limitar FPS: 30fps en móvil, 60fps en desktop
+    const targetFPS = isMobile ? 30 : 60;
+    const interval  = 1000 / targetFPS;
+    let lastTime = 0;
     let id: number;
-    function draw() {
+
+    function draw(timestamp: number) {
       id = requestAnimationFrame(draw);
+      if (timestamp - lastTime < interval) return;
+      lastTime = timestamp;
+
       ctx!.clearRect(0, 0, W, H);
-      const ox = (mx / W - 0.5) * 30, oy = (my / H - 0.5) * 20;
+      const ox = (mx / W - 0.5) * 20, oy = (my / H - 0.5) * 15;
       const g = ctx!.createRadialGradient(W*.5+ox, H*.3+oy, 0, W*.5+ox, H*.3+oy, W*.5);
-      g.addColorStop(0, 'rgba(124,58,237,0.1)');
+      g.addColorStop(0, 'rgba(124,58,237,0.08)');
       g.addColorStop(1, 'transparent');
       ctx!.fillStyle = g; ctx!.fillRect(0, 0, W, H);
       for (const p of particles) {
