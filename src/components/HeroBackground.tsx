@@ -1,11 +1,18 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 export default function HeroBackground() {
   const mountRef = useRef<HTMLDivElement>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (!mountRef.current) return;
+    // Diferir Three.js hasta que el LCP haya cargado
+    const timer = setTimeout(() => setLoaded(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!loaded || !mountRef.current) return;
     const W = window.innerWidth, H = window.innerHeight;
 
     const scene    = new THREE.Scene();

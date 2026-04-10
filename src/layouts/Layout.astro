@@ -1,16 +1,260 @@
 ---
 import '../styles/global.css';
-interface Props { title: string; }
-const { title } = Astro.props;
+interface Props { title: string; description?: string; image?: string; }
+const { title, description = 'Descubre eventos únicos, compra entradas con tecnología QR y vive momentos que no olvidarás.', image } = Astro.props;
+const siteUrl = import.meta.env.PUBLIC_SITE_URL ?? 'https://eventos-nova-tec.vercel.app';
 ---
 <!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#02020a" />
     <title>{title} | EventosApp</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <meta name="description" content={description} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={`${title} | EventosApp`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="EventosApp" />
+    {image && <meta property="og:image" content={image} />}
+
+    <!-- Preconnect fuentes (evita bloqueo de render) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Fuentes con display=swap para no bloquear -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Space+Grotesk:wght@500;700;900&display=swap" rel="stylesheet" />
+
     <slot name="head" />
+    <style>
+      /* ── Navbar ── */
+      .nav-links { display: flex; align-items: center; gap: 8px; }
+      .nav-hamburger { display: none; }
+      .nav-mobile { display: none; }
+      @media (max-width: 640px) {
+        .nav-links { display: none; }
+        .nav-hamburger { display: flex; }
+        .nav-mobile.open { display: flex; }
+      }
+
+      /* ── Hero ── */
+      .hero-content { padding: 0 40px; }
+      @media (max-width: 768px) { .hero-content { padding: 0 20px; } }
+
+      /* ── Grids responsive ── */
+      .eventos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+      @media (max-width: 700px) { .eventos-grid { grid-template-columns: 1fr; gap: 16px; } }
+
+      .pasos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+      @media (max-width: 900px) { .pasos-grid { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 500px) { .pasos-grid { grid-template-columns: 1fr; } }
+
+      .evento-grid { display: grid; grid-template-columns: 1fr 380px; gap: 40px; align-items: start; }
+      @media (max-width: 900px) { .evento-grid { grid-template-columns: 1fr; } }
+
+      .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      @media (max-width: 480px) { .meta-grid { grid-template-columns: 1fr; } }
+
+      /* ── Sección padding ── */
+      .section-pad { padding: 100px 0; }
+      .section-inner { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+      @media (max-width: 768px) {
+        .section-pad { padding: 64px 0; }
+        .section-inner { padding: 0 20px; }
+      }
+
+      .hero-pad { padding: 0 40px 48px; }
+      @media (max-width: 768px) { .hero-pad { padding: 0 20px 32px; } }
+
+      /* ── Stats ── */
+      .stats-row { display: flex; gap: 0; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; overflow: hidden; background: rgba(255,255,255,0.02); }
+      @media (max-width: 400px) {
+        .stats-row { flex-direction: column; }
+        .stats-row > div { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .stats-row > div:last-child { border-bottom: none; }
+      }
+
+      /* ── CTA buttons ── */
+      .cta-btns { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 56px; }
+      @media (max-width: 480px) {
+        .cta-btns { flex-direction: column; }
+        .cta-btns a { text-align: center; justify-content: center; }
+        .cta-btns { margin-bottom: 36px; }
+      }
+
+      /* ── Mis entradas ── */
+      .mis-entradas-form { display: flex; gap: 10px; }
+      @media (max-width: 480px) { .mis-entradas-form { flex-direction: column; } }
+
+      .entrada-img-row { display: flex; gap: 0; }
+      @media (max-width: 480px) {
+        .entrada-img-row { flex-direction: column; }
+        .entrada-img-row img { width: 100% !important; height: 140px !important; }
+      }
+
+      /* ── Countdown ── */
+      .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+      @media (max-width: 360px) { .countdown-grid { grid-template-columns: repeat(2, 1fr); } }
+
+      /* ── Footer ── */
+      .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+      @media (max-width: 480px) { .footer-inner { flex-direction: column; text-align: center; } }
+
+      /* ── Accesibilidad: focus visible ── */
+      a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+        outline: 2px solid #a78bfa;
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body style="font-family:'Space Grotesk',sans-serif;">
+
+    <!-- Skip to content (accesibilidad) -->
+    <a href="#main-content"
+      style="position:absolute;top:-100px;left:20px;background:#7c3aed;color:white;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;z-index:999;transition:top 0.2s;"
+      onfocus="this.style.top='20px'" onblur="this.style.top='-100px'">
+      Saltar al contenido
+    </a>
+
+    <!-- Navbar -->
+    <nav id="navbar" role="navigation" aria-label="Navegación principal"
+      style="position:fixed;top:0;left:0;right:0;z-index:100;transition:all 0.3s ease;">
+      <div style="max-width:1280px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+
+        <a href="/" aria-label="EventosApp - Inicio"
+          style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
+          <div style="width:34px;height:34px;background:linear-gradient(135deg,#7c3aed,#ec4899);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;" aria-hidden="true">🎟</div>
+          <span style="font-weight:800;font-size:18px;letter-spacing:-0.5px;" class="shimmer-text">EventosApp</span>
+        </a>
+
+        <!-- Desktop links -->
+        <div class="nav-links" role="list">
+          {[
+            { href: '/#eventos',     label: 'Eventos'      },
+            { href: '/mis-entradas', label: 'Mis entradas' },
+          ].map(l => (
+            <a href={l.href} role="listitem"
+              style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:14px;font-weight:500;padding:8px 14px;border-radius:8px;transition:all 0.2s;border:1px solid transparent;"
+              onmouseover="this.style.color='white';this.style.borderColor='rgba(124,58,237,0.3)';this.style.background='rgba(124,58,237,0.08)'"
+              onmouseout="this.style.color='rgba(255,255,255,0.6)';this.style.borderColor='transparent';this.style.background='transparent'">
+              {l.label}
+            </a>
+          ))}
+        </div>
+
+        <!-- Hamburger -->
+        <button class="nav-hamburger" id="hamburger"
+          aria-label="Abrir menú de navegación"
+          aria-expanded="false"
+          aria-controls="mobileMenu"
+          style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white;width:40px;height:40px;border-radius:10px;cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:5px;padding:0;">
+          <span style="display:block;width:18px;height:2px;background:white;border-radius:2px;transition:all 0.3s;" id="h1"></span>
+          <span style="display:block;width:18px;height:2px;background:white;border-radius:2px;transition:all 0.3s;" id="h2"></span>
+          <span style="display:block;width:18px;height:2px;background:white;border-radius:2px;transition:all 0.3s;" id="h3"></span>
+        </button>
+      </div>
+
+      <!-- Mobile menu -->
+      <div class="nav-mobile" id="mobileMenu" role="menu"
+        style="flex-direction:column;gap:4px;padding:12px 20px 16px;background:rgba(5,5,15,0.98);border-top:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(20px);">
+        {[
+          { href: '/',             label: 'Inicio'       },
+          { href: '/#eventos',     label: 'Eventos'      },
+          { href: '/mis-entradas', label: 'Mis entradas' },
+        ].map(l => (
+          <a href={l.href} role="menuitem"
+            style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:15px;font-weight:500;padding:12px 16px;border-radius:10px;border:1px solid transparent;transition:all 0.2s;"
+            onmouseover="this.style.color='white';this.style.background='rgba(124,58,237,0.1)';this.style.borderColor='rgba(124,58,237,0.2)'"
+            onmouseout="this.style.color='rgba(255,255,255,0.7)';this.style.background='transparent';this.style.borderColor='transparent'">
+            {l.label}
+          </a>
+        ))}
+      </div>
+
+      <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(124,58,237,0.4),rgba(236,72,153,0.4),transparent);opacity:0.5;" aria-hidden="true"></div>
+    </nav>
+
+    <main id="main-content" style="padding-top:64px;">
+      <slot />
+    </main>
+
+    <footer role="contentinfo" style="background:#02020a;border-top:1px solid rgba(124,58,237,0.12);padding:40px 20px 28px;position:relative;overflow:hidden;">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,rgba(124,58,237,0.05),transparent 70%);pointer-events:none;" aria-hidden="true"></div>
+      <div style="max-width:1280px;margin:0 auto;position:relative;z-index:1;">
+        <div class="footer-inner">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:28px;height:28px;background:linear-gradient(135deg,#7c3aed,#ec4899);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;" aria-hidden="true">🎟</div>
+            <span style="font-weight:700;font-size:15px;" class="gradient-text">EventosApp</span>
+          </div>
+          <p style="color:rgba(255,255,255,0.3);font-size:12px;">© {new Date().getFullYear()} EventosApp — Todos los derechos reservados</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const navbar    = document.getElementById('navbar');
+      const hamburger = document.getElementById('hamburger') as HTMLButtonElement;
+      const menu      = document.getElementById('mobileMenu');
+      let open = false;
+
+      hamburger?.addEventListener('click', () => {
+        open = !open;
+        menu?.classList.toggle('open', open);
+        hamburger.setAttribute('aria-expanded', String(open));
+        hamburger.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú de navegación');
+        const h1 = document.getElementById('h1');
+        const h2 = document.getElementById('h2');
+        const h3 = document.getElementById('h3');
+        if (open) {
+          h1!.style.transform = 'translateY(7px) rotate(45deg)';
+          h2!.style.opacity   = '0';
+          h3!.style.transform = 'translateY(-7px) rotate(-45deg)';
+        } else {
+          h1!.style.transform = '';
+          h2!.style.opacity   = '1';
+          h3!.style.transform = '';
+        }
+      });
+
+      menu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+        open = false;
+        menu.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        document.getElementById('h1')!.style.transform = '';
+        document.getElementById('h2')!.style.opacity   = '1';
+        document.getElementById('h3')!.style.transform = '';
+      }));
+
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+          navbar!.style.background     = 'rgba(2,2,10,0.95)';
+          navbar!.style.backdropFilter = 'blur(20px)';
+        } else {
+          navbar!.style.background     = 'transparent';
+          navbar!.style.backdropFilter = 'none';
+        }
+      });
+
+      // Reveal on scroll
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(el => {
+          if (el.isIntersecting) {
+            (el.target as HTMLElement).style.opacity   = '1';
+            (el.target as HTMLElement).style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.08 });
+
+      document.querySelectorAll('.reveal').forEach(el => {
+        (el as HTMLElement).style.opacity   = '0';
+        (el as HTMLElement).style.transform = 'translateY(40px)';
+        (el as HTMLElement).style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+        observer.observe(el);
+      });
+    </script>
+  </body>
+</html>
     <style>
       /* ── Navbar ── */
       .nav-links { display: flex; align-items: center; gap: 8px; }
