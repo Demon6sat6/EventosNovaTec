@@ -10,7 +10,7 @@ const { data: eventos } = await db
   .eq('publicado', true)
   .order('fecha', { ascending: true });
 ---
-<Layout title="Inicio">
+<Layout title="Inicio" description="Descubre los mejores eventos, compra entradas con tecnología QR y vive experiencias únicas.">
 
 <section style="position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:#02020a;">
   <HeroBackground client:idle />
