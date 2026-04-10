@@ -37,7 +37,10 @@ export default function HeroBackground() {
 
     const onResize = () => {
       W = window.innerWidth; H = window.innerHeight;
-      canvas.width = W; canvas.height = H;
+      const d = Math.min(window.devicePixelRatio, W < 768 ? 1 : 1.5);
+      canvas.width  = W * d; canvas.height = H * d;
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      ctx.scale(d, d);
     };
     window.addEventListener('resize', onResize);
 
