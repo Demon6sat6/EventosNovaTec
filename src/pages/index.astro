@@ -267,6 +267,66 @@ const { data: eventos } = await db
   }, { threshold: 0.08 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
+  // Canvas hero vanilla (sin React, sin bundle extra)
+  (function() {
+    const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let W = window.innerWidth, H = window.innerHeight;
+    // En móvil pequeño no renderizar canvas
+    if (W < 480) { canvas.style.display = 'none'; return; }
+
+    canvas.width = W; canvas.height = H;
+
+    const isMobile = W < 768;
+    const COUNT = isMobile ? 30 : 70;
+    const particles = Array.from({ length: COUNT }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.2 + 0.3,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.18,
+      a: Math.random() * 0.45 + 0.15,
+      c: Math.random() > 0.5 ? '124,58,237' : '236,72,153',
+    }));
+
+    let mx = W / 2, my = H / 2;
+    if (!isMobile) {
+      window.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; }, { passive: true });
+    }
+    window.addEventListener('resize', () => {
+      W = window.innerWidth; H = window.innerHeight;
+      canvas.width = W; canvas.height = H;
+    }, { passive: true });
+
+    let id: number;
+    function draw() {
+      id = requestAnimationFrame(draw);
+      ctx!.clearRect(0, 0, W, H);
+      const ox = (mx / W - 0.5) * 30, oy = (my / H - 0.5) * 20;
+      const g = ctx!.createRadialGradient(W*.5+ox, H*.3+oy, 0, W*.5+ox, H*.3+oy, W*.5);
+      g.addColorStop(0, 'rgba(124,58,237,0.1)');
+      g.addColorStop(1, 'transparent');
+      ctx!.fillStyle = g; ctx!.fillRect(0, 0, W, H);
+      for (const p of particles) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+        ctx!.beginPath();
+        ctx!.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(${p.c},${p.a})`;
+        ctx!.fill();
+      }
+    }
+    // Diferir hasta que el navegador esté idle
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(() => draw());
+    } else {
+      setTimeout(() => draw(), 200);
+    }
+  })();
+
   // Búsqueda de eventos
   const buscador = document.getElementById('buscador') as HTMLInputElement;  const cards    = document.querySelectorAll('[data-titulo]');
   buscador?.addEventListener('input', () => {
