@@ -20,7 +20,12 @@ export default function HeroBackground() {
     ctx.scale(dpr, dpr);
 
     // Menos partículas en móvil para mejor rendimiento
-    const COUNT = W < 768 ? 40 : 80;
+    const COUNT = W < 768 ? 30 : 80;
+    // En móvil muy pequeño, skip animación pesada
+    if (W < 480) {
+      canvas.style.display = 'none';
+      return;
+    }
     const particles = Array.from({ length: COUNT }, () => ({
       x:  Math.random() * W,
       y:  Math.random() * H,
