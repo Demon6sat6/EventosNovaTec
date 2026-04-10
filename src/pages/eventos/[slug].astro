@@ -28,8 +28,11 @@ const siteUrl = import.meta.env.PUBLIC_SITE_URL ?? 'http://localhost:4321';
   <!-- Hero -->
   <section style="position:relative;overflow:hidden;min-height:480px;display:flex;align-items:flex-end;">
     {evento.imagen_url
-      ? <img src={evento.imagen_url} alt={evento.titulo} style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.35) saturate(1.3);" />
-      : <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d0520,#1a0530,#0d0520);"></div>
+      ? <img src={evento.imagen_url} alt={`Imagen del evento ${evento.titulo}`}
+          width="1280" height="480"
+          fetchpriority="high"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.35) saturate(1.3);" />
+      : <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d0520,#1a0530,#0d0520);" aria-hidden="true"></div>
     }
     <div style="position:absolute;inset:0;background:linear-gradient(to top,#02020a 0%,rgba(2,2,10,0.5) 50%,transparent 100%);"></div>
     <div style="position:absolute;inset:0;" class="cyber-grid" style="opacity:0.3;"></div>
