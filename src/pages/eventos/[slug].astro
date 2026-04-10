@@ -14,15 +14,9 @@ const disponibles = evento.capacidad - (count ?? 0);
 const pct = Math.round(((count ?? 0) / evento.capacidad) * 100);
 const siteUrl = import.meta.env.PUBLIC_SITE_URL ?? 'http://localhost:4321';
 ---
-<Layout title={evento.titulo}>
+<Layout title={evento.titulo} description={evento.descripcion?.slice(0,160)} image={evento.imagen_url ?? undefined}>
   <Fragment slot="head">
-    <meta name="description" content={evento.descripcion?.slice(0,160)} />
-    <meta property="og:title" content={evento.titulo} />
-    <meta property="og:description" content={evento.descripcion?.slice(0,160)} />
-    <meta property="og:image" content={evento.imagen_url ?? `${siteUrl}/favicon.svg`} />
-    <meta property="og:url" content={`${siteUrl}/eventos/${evento.slug}`} />
     <meta property="og:type" content="event" />
-    <meta name="twitter:card" content="summary_large_image" />
   </Fragment>
 
   <!-- Hero -->
