@@ -14,8 +14,8 @@ export default function HeroBackground() {
     canvas.width  = W;
     canvas.height = H;
 
-    // Partículas ligeras
-    const COUNT = 80;
+    // Menos partículas en móvil para mejor rendimiento
+    const COUNT = W < 768 ? 40 : 80;
     const particles = Array.from({ length: COUNT }, () => ({
       x:  Math.random() * W,
       y:  Math.random() * H,
