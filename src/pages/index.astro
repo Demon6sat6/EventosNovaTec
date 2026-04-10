@@ -331,9 +331,9 @@ const { data: eventos } = await db
     }
     // Diferir hasta que el navegador esté idle
     if ('requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(() => draw());
+      (window as any).requestIdleCallback(() => draw(0));
     } else {
-      setTimeout(() => draw(), 200);
+      setTimeout(() => draw(0), 200);
     }
   })();
 
