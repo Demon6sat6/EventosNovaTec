@@ -11,8 +11,13 @@ export default function HeroBackground() {
 
     let W = window.innerWidth;
     let H = window.innerHeight;
-    canvas.width  = W;
-    canvas.height = H;
+    // En móvil usamos resolución reducida para mejor rendimiento
+    const dpr = Math.min(window.devicePixelRatio, W < 768 ? 1 : 1.5);
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.scale(dpr, dpr);
 
     // Menos partículas en móvil para mejor rendimiento
     const COUNT = W < 768 ? 40 : 80;
