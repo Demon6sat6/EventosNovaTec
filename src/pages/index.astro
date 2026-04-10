@@ -10,7 +10,7 @@ const { data: eventos } = await db
   .eq('publicado', true)
   .order('fecha', { ascending: true });
 ---
-<Layout title="Inicio" description="Descubre los mejores eventos, compra entradas con tecnología QR y vive experiencias únicas. Plataforma de eventos en vivo.">
+<Layout title="Inicio">
 
 <section style="position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:#02020a;">
   <HeroBackground client:only="react" />
@@ -128,13 +128,11 @@ const { data: eventos } = await db
             class="reveal card-3d neon-card"
             data-titulo={evento.titulo}
             data-lugar={evento.lugar}
-            aria-label={`Ver evento: ${evento.titulo} - ${new Date(evento.fecha).toLocaleDateString('es-ES')} en ${evento.lugar}`}
             style={`display:block;border-radius:24px;overflow:hidden;text-decoration:none;position:relative;transition-delay:${idx*80}ms;`}>
 
             <div style="position:relative;height:230px;overflow:hidden;background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(236,72,153,0.15));">
               {evento.imagen_url ? (
-                <img src={evento.imagen_url} alt={`Imagen del evento ${evento.titulo}`}
-                  loading="lazy" decoding="async" width="400" height="230"
+                <img src={evento.imagen_url} alt={evento.titulo}
                   style="width:100%;height:100%;object-fit:cover;transition:transform 0.7s ease;filter:brightness(0.65) saturate(1.3);"
                   class="card-img" />
               ) : (
