@@ -268,8 +268,7 @@ const { data: eventos } = await db
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
   // Búsqueda de eventos
-  const buscador = document.getElementById('buscador') as HTMLInputElement;
-  const cards    = document.querySelectorAll('[data-titulo]');
+  const buscador = document.getElementById('buscador') as HTMLInputElement;  const cards    = document.querySelectorAll('[data-titulo]');
   buscador?.addEventListener('input', () => {
     const q = buscador.value.toLowerCase();
     cards.forEach(card => {
