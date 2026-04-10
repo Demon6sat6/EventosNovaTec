@@ -135,3 +135,18 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ── Reducir animaciones en móvil para mejor rendimiento ── */
+@media (max-width: 768px) {
+  .float, .float2, .float3 { animation: none; }
+  .card-3d { transition: none; will-change: auto; }
+  .shimmer-text { animation: none; }
+}
+
+/* ── Respetar preferencia de movimiento reducido ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
