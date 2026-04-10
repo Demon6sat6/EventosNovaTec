@@ -150,3 +150,9 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── Desactivar animaciones problemáticas en móvil ── */
+@media (max-width: 768px) {
+  .scan-line { display: none !important; }
+  .pulse-dot { animation: none !important; box-shadow: none !important; }
+}
