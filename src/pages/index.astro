@@ -34,7 +34,7 @@ const { data: eventos } = await db
     <div style="max-width:800px;">
 
       <div style="display:inline-flex;align-items:center;gap:12px;margin-bottom:40px;padding:8px 20px;background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.25);border-radius:100px;backdrop-filter:blur(10px);">
-        <span style="width:6px;height:6px;background:#a78bfa;border-radius:50%;box-shadow:0 0 12px #a78bfa;animation:pulse-ring 2s ease-out infinite;"></span>
+        <span class="pulse-dot" style="width:6px;height:6px;background:#a78bfa;border-radius:50%;box-shadow:0 0 12px #a78bfa;animation:pulse-ring 2s ease-out infinite;"></span>
         <span style="color:#c4b5fd;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Plataforma de eventos en vivo</span>
         <span style="width:1px;height:12px;background:rgba(124,58,237,0.4);"></span>
         <span style="color:rgba(255,255,255,0.3);font-size:11px;">{eventos?.length ?? 0} activos</span>
