@@ -3,8 +3,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 import QRScanner from '../../components/QRScanner';
 ---
 <AdminLayout title="Check-in QR">
-  <div class="max-w-lg">
-    <p class="text-white/40 text-sm mb-6">
+  <div style="max-width:512px;">
+    <p style="color:rgba(255,255,255,0.4);font-size:14px;margin-bottom:24px;line-height:1.6;">
       Activa la cámara y apunta al código QR de la entrada del asistente para validarla automáticamente.
     </p>
     <QRScanner client:load />

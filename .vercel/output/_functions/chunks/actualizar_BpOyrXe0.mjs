@@ -18,16 +18,12 @@ const POST = async ({ request, cookies, redirect }) => {
     return redirect("/admin/perfil?err=Contraseña+actual+incorrecta");
   }
   const db = createServerClient();
-  const updates = { email, nombre, updated_at: (/* @__PURE__ */ new Date()).toISOString() };
+  const updates = { email, nombre };
   if (newPassword) {
-    if (newPassword.length < 8) {
-      return redirect("/admin/perfil?err=La+nueva+contraseña+debe+tener+al+menos+8+caracteres");
+    if (newPassword.length < 6) {
+      return redirect("/admin/perfil?err=La+nueva+contraseña+debe+tener+al+menos+6+caracteres");
     }
-    const { data: hash, error: hashErr } = await db.rpc("hash_password", { p_password: newPassword });
-    if (hashErr || !hash) {
-      return redirect("/admin/perfil?err=Error+al+procesar+contraseña");
-    }
-    updates.password_hash = hash;
+    updates.password = newPassword;
   }
   const { error } = await db.from("admin_users").update(updates).eq("id", currentUser.id);
   if (error) {

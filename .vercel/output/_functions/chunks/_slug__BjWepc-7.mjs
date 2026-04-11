@@ -1,8 +1,8 @@
 import { c as createComponent } from './astro-component_CnPl_Uqv.mjs';
 import 'piccolore';
 import { T as renderTemplate, F as Fragment$1, B as maybeRenderHead, a4 as addAttribute } from './sequence_jkwZ4rKh.mjs';
-import { r as renderComponent } from './entrypoint_D5PyMbLA.mjs';
-import { $ as $$Layout } from './Layout_ChXH6dN_.mjs';
+import { r as renderComponent } from './entrypoint_BA6aodfA.mjs';
+import { $ as $$Layout } from './Layout_DKJg6wAj.mjs';
 import { createServerClient } from './supabase_CuZ_5uQz.mjs';
 import { jsxs, jsx, Fragment } from 'react/jsx-runtime';
 import { useState, useEffect } from 'react';

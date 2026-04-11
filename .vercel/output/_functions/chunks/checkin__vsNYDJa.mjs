@@ -1,8 +1,8 @@
 import { c as createComponent } from './astro-component_CnPl_Uqv.mjs';
 import 'piccolore';
 import { T as renderTemplate, B as maybeRenderHead } from './sequence_jkwZ4rKh.mjs';
-import { r as renderComponent } from './entrypoint_D5PyMbLA.mjs';
-import { $ as $$AdminLayout } from './AdminLayout_Cf2CqdKK.mjs';
+import { r as renderComponent } from './entrypoint_BA6aodfA.mjs';
+import { $ as $$AdminLayout } from './AdminLayout_Bkp6hMb9.mjs';
 import { jsxs, jsx, Fragment } from 'react/jsx-runtime';
 import { useRef, useState, useEffect } from 'react';
 
@@ -149,7 +149,7 @@ function QRScanner() {
 }
 
 const $$Checkin = createComponent(($$result, $$props, $$slots) => {
-  return renderTemplate`${renderComponent($$result, "AdminLayout", $$AdminLayout, { "title": "Check-in QR" }, { "default": ($$result2) => renderTemplate` ${maybeRenderHead()}<div class="max-w-lg"> <p class="text-white/40 text-sm mb-6">
+  return renderTemplate`${renderComponent($$result, "AdminLayout", $$AdminLayout, { "title": "Check-in QR" }, { "default": ($$result2) => renderTemplate` ${maybeRenderHead()}<div style="max-width:512px;"> <p style="color:rgba(255,255,255,0.4);font-size:14px;margin-bottom:24px;line-height:1.6;">
 Activa la cámara y apunta al código QR de la entrada del asistente para validarla automáticamente.
 </p> ${renderComponent($$result2, "QRScanner", QRScanner, { "client:load": true, "client:component-hydration": "load", "client:component-path": "C:/Users/Sat/OneDrive - SENATI/Desktop/Web de eventos + sistema de entradas y asistencia/eventos-app/src/components/QRScanner", "client:component-export": "default" })} </div> ` })}`;
 }, "C:/Users/Sat/OneDrive - SENATI/Desktop/Web de eventos + sistema de entradas y asistencia/eventos-app/src/pages/admin/checkin.astro", void 0);

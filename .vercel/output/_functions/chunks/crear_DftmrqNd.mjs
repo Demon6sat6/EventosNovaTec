@@ -12,17 +12,13 @@ const POST = async ({ request, cookies, redirect }) => {
   const password = form.get("password")?.trim();
   const nombre = form.get("nombre")?.trim() || null;
   const rol = form.get("rol") ?? "admin";
-  if (!email || !password || password.length < 8) {
+  if (!email || !password || password.length < 6) {
     return redirect("/admin/usuarios?err=Datos+inválidos+o+contraseña+muy+corta");
   }
   const db = createServerClient();
-  const { data: hash, error: hashErr } = await db.rpc("hash_password", { p_password: password });
-  if (hashErr || !hash) {
-    return redirect("/admin/usuarios?err=Error+al+procesar+contraseña");
-  }
   const { error } = await db.from("admin_users").insert({
     email,
-    password_hash: hash,
+    password,
     nombre,
     rol
   });

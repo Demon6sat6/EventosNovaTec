@@ -17,16 +17,12 @@ const POST = async ({ request, cookies, redirect }) => {
     return redirect("/admin/usuarios?err=Datos+inválidos");
   }
   const db = createServerClient();
-  const updates = { email, nombre, rol, updated_at: (/* @__PURE__ */ new Date()).toISOString() };
+  const updates = { email, nombre, rol };
   if (password) {
-    if (password.length < 8) {
-      return redirect("/admin/usuarios?err=Contraseña+muy+corta+(mínimo+8+caracteres)");
+    if (password.length < 6) {
+      return redirect("/admin/usuarios?err=Contraseña+muy+corta+(mínimo+6+caracteres)");
     }
-    const { data: hash, error: hashErr } = await db.rpc("hash_password", { p_password: password });
-    if (hashErr || !hash) {
-      return redirect("/admin/usuarios?err=Error+al+procesar+contraseña");
-    }
-    updates.password_hash = hash;
+    updates.password = password;
   }
   const { error } = await db.from("admin_users").update(updates).eq("id", id);
   if (error) {
