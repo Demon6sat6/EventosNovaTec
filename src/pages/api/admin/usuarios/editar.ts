@@ -22,17 +22,13 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   }
 
   const db = createServerClient();
-  const updates: Record<string, unknown> = { email, nombre, rol, updated_at: new Date().toISOString() };
+  const updates: Record<string, unknown> = { email, nombre, rol };
 
   if (password) {
-    if (password.length < 8) {
-      return redirect('/admin/usuarios?err=Contraseña+muy+corta+(mínimo+8+caracteres)');
+    if (password.length < 6) {
+      return redirect('/admin/usuarios?err=Contraseña+muy+corta+(mínimo+6+caracteres)');
     }
-    const { data: hash, error: hashErr } = await db.rpc('hash_password', { p_password: password });
-    if (hashErr || !hash) {
-      return redirect('/admin/usuarios?err=Error+al+procesar+contraseña');
-    }
-    updates.password_hash = hash;
+    updates.password = password;
   }
 
   const { error } = await db.from('admin_users').update(updates).eq('id', id);
