@@ -1,8 +1,8 @@
 import { c as createComponent } from './astro-component_CnPl_Uqv.mjs';
 import 'piccolore';
 import { T as renderTemplate, B as maybeRenderHead, a4 as addAttribute } from './sequence_jkwZ4rKh.mjs';
-import { r as renderComponent } from './entrypoint_BA6aodfA.mjs';
-import { $ as $$AdminLayout } from './AdminLayout_Bkp6hMb9.mjs';
+import { r as renderComponent } from './entrypoint_B7Ywt9HA.mjs';
+import { $ as $$AdminLayout } from './AdminLayout_Dkk_-xhQ.mjs';
 
 const $$Configuracion = createComponent(($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$props, $$slots);

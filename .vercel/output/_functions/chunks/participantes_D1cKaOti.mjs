@@ -1,9 +1,9 @@
 import { c as createComponent } from './astro-component_CnPl_Uqv.mjs';
 import 'piccolore';
 import { T as renderTemplate, B as maybeRenderHead, a4 as addAttribute } from './sequence_jkwZ4rKh.mjs';
-import { r as renderComponent } from './entrypoint_BA6aodfA.mjs';
+import { r as renderComponent } from './entrypoint_B7Ywt9HA.mjs';
 import { r as renderScript } from './script_CzrHCzjw.mjs';
-import { $ as $$AdminLayout } from './AdminLayout_Bkp6hMb9.mjs';
+import { $ as $$AdminLayout } from './AdminLayout_Dkk_-xhQ.mjs';
 import { createServerClient } from './supabase_CuZ_5uQz.mjs';
 
 const $$Participantes = createComponent(async ($$result, $$props, $$slots) => {
