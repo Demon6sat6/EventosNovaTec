@@ -16,21 +16,15 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const nombre   = (form.get('nombre')   as string)?.trim() || null;
   const rol      = (form.get('rol')      as string) ?? 'admin';
 
-  if (!email || !password || password.length < 8) {
+  if (!email || !password || password.length < 6) {
     return redirect('/admin/usuarios?err=Datos+inválidos+o+contraseña+muy+corta');
   }
 
   const db = createServerClient();
 
-  // Hashear contraseña via RPC
-  const { data: hash, error: hashErr } = await db.rpc('hash_password', { p_password: password });
-  if (hashErr || !hash) {
-    return redirect('/admin/usuarios?err=Error+al+procesar+contraseña');
-  }
-
   const { error } = await db.from('admin_users').insert({
     email,
-    password_hash: hash,
+    password,
     nombre,
     rol,
   });
