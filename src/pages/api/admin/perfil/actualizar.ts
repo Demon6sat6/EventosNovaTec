@@ -9,10 +9,10 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   if (!currentUser) return redirect('/admin/login');
 
   const form = await request.formData();
-  const email            = (form.get('email')            as string)?.trim();
-  const nombre           = (form.get('nombre')           as string)?.trim() || null;
-  const currentPassword  = (form.get('current_password') as string)?.trim();
-  const newPassword      = (form.get('new_password')     as string)?.trim();
+  const email           = (form.get('email')            as string)?.trim();
+  const nombre          = (form.get('nombre')           as string)?.trim() || null;
+  const currentPassword = (form.get('current_password') as string)?.trim();
+  const newPassword     = (form.get('new_password')     as string)?.trim();
 
   if (!email || !currentPassword) {
     return redirect('/admin/perfil?err=Completa+todos+los+campos+requeridos');
@@ -25,17 +25,13 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   }
 
   const db = createServerClient();
-  const updates: Record<string, unknown> = { email, nombre, updated_at: new Date().toISOString() };
+  const updates: Record<string, unknown> = { email, nombre };
 
   if (newPassword) {
-    if (newPassword.length < 8) {
-      return redirect('/admin/perfil?err=La+nueva+contraseña+debe+tener+al+menos+8+caracteres');
+    if (newPassword.length < 6) {
+      return redirect('/admin/perfil?err=La+nueva+contraseña+debe+tener+al+menos+6+caracteres');
     }
-    const { data: hash, error: hashErr } = await db.rpc('hash_password', { p_password: newPassword });
-    if (hashErr || !hash) {
-      return redirect('/admin/perfil?err=Error+al+procesar+contraseña');
-    }
-    updates.password_hash = hash;
+    updates.password = newPassword;
   }
 
   const { error } = await db.from('admin_users').update(updates).eq('id', currentUser.id);
