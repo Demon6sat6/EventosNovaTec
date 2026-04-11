@@ -1,7 +1,4 @@
 {
-  "functions": {
-    "api/**": {
-      "runtime": "nodejs22.x"
-    }
-  }
+  "buildCommand": "astro build",
+  "framework": "astro"
 }

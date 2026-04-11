@@ -2,15 +2,19 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+const serviceRoleKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
 
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Faltan variables de entorno: PUBLIC_SUPABASE_URL y PUBLIC_SUPABASE_ANON_KEY son requeridas');
+}
+
+// Cliente público (anon key) — para páginas públicas
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Server-side client con service role (solo en endpoints API)
+// Cliente con privilegios — para API endpoints y páginas admin
 export function createServerClient() {
-  return createClient(
-    import.meta.env.PUBLIC_SUPABASE_URL,
-    import.meta.env.SUPABASE_SERVICE_ROLE_KEY
-  );
+  const key = serviceRoleKey || supabaseAnonKey;
+  return createClient(supabaseUrl, key);
 }
 
 export type Evento = {
