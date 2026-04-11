@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* ── Variables de color corporativo ── */
 :root {
   --bg:        #0a0f1e;

@@ -1,0 +1,39 @@
+import { c as createComponent } from './astro-component_CnPl_Uqv.mjs';
+import 'piccolore';
+import { b9 as renderHead, a4 as addAttribute, T as renderTemplate, D as renderSlot } from './sequence_jkwZ4rKh.mjs';
+import 'clsx';
+/* empty css                 */
+import { g as getSessionUser } from './auth_Zqlk1v2P.mjs';
+
+const $$AdminLayout = createComponent(($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$props, $$slots);
+  Astro2.self = $$AdminLayout;
+  const { title } = Astro2.props;
+  const path = Astro2.url.pathname;
+  const user = getSessionUser(Astro2.cookies);
+  const userEmail = user?.email ?? "admin@eventosapp.com";
+  const userNombre = user?.nombre ?? userEmail;
+  const userInitial = userNombre.charAt(0).toUpperCase();
+  const isSuperAdmin = user?.rol === "superadmin";
+  const navItems = [
+    { href: "/admin", icon: "⚡", label: "Dashboard", exact: true },
+    { href: "/admin/eventos", icon: "📅", label: "Eventos", exact: false },
+    { href: "/admin/checkin", icon: "📷", label: "Check-in QR", exact: false },
+    { href: "/admin/participantes", icon: "👥", label: "Participantes", exact: false },
+    { href: "/admin/reportes", icon: "📊", label: "Reportes", exact: false }
+  ];
+  const accountItems = [
+    { href: "/admin/perfil", icon: "👤", label: "Mi perfil" },
+    ...isSuperAdmin ? [{ href: "/admin/usuarios", icon: "🔐", label: "Usuarios" }] : [],
+    { href: "/admin/configuracion", icon: "⚙️", label: "Configuración" }
+  ];
+  return renderTemplate`<html lang="es" data-astro-cid-2kanml4j> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${title} | Admin — EventosApp</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">${renderHead()}</head> <body data-astro-cid-2kanml4j> <!-- Sidebar --> <aside class="sidebar" data-astro-cid-2kanml4j> <!-- Logo --> <div style="padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.05);" data-astro-cid-2kanml4j> <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:4px;" data-astro-cid-2kanml4j> <img src="/logo.png" alt="NovaTec Events" width="130" height="40" style="height:40px;width:auto;object-fit:contain;" data-astro-cid-2kanml4j> </a> <p style="color:rgba(255,255,255,0.2);font-size:11px;margin-left:4px;" data-astro-cid-2kanml4j>Panel de administración</p> </div> <!-- Nav principal --> <nav style="flex:1;padding:12px 8px;" data-astro-cid-2kanml4j> <div class="nav-section" data-astro-cid-2kanml4j>Principal</div> ${navItems.map((item) => {
+    const active = item.exact ? path === item.href : path.startsWith(item.href);
+    return renderTemplate`<a${addAttribute(item.href, "href")}${addAttribute(`nav-link ${active ? "active" : ""}`, "class")} data-astro-cid-2kanml4j> <span style="font-size:15px;width:20px;text-align:center;" data-astro-cid-2kanml4j>${item.icon}</span> <span data-astro-cid-2kanml4j>${item.label}</span> ${active && renderTemplate`<span style="margin-left:auto;width:6px;height:6px;background:#a78bfa;border-radius:50%;box-shadow:0 0 6px #a78bfa;" data-astro-cid-2kanml4j></span>`} </a>`;
+  })} <div class="nav-section" style="margin-top:8px;" data-astro-cid-2kanml4j>Cuenta</div> ${accountItems.map((item) => {
+    const active = path === item.href;
+    return renderTemplate`<a${addAttribute(item.href, "href")}${addAttribute(`nav-link ${active ? "active" : ""}`, "class")} data-astro-cid-2kanml4j> <span style="font-size:15px;width:20px;text-align:center;" data-astro-cid-2kanml4j>${item.icon}</span> <span data-astro-cid-2kanml4j>${item.label}</span> </a>`;
+  })} </nav> <!-- User footer --> <div style="padding:12px 8px;border-top:1px solid rgba(255,255,255,0.05);" data-astro-cid-2kanml4j> <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.05);" data-astro-cid-2kanml4j> <div style="width:32px;height:32px;background:linear-gradient(135deg,#7c3aed,#ec4899);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;" data-astro-cid-2kanml4j> ${userInitial} </div> <div style="flex:1;min-width:0;" data-astro-cid-2kanml4j> <p style="color:white;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" data-astro-cid-2kanml4j>${userNombre}</p> <p style="color:rgba(255,255,255,0.3);font-size:11px;" data-astro-cid-2kanml4j>${user?.rol ?? "admin"}</p> </div> <form method="POST" action="/api/auth/logout" style="flex-shrink:0;" data-astro-cid-2kanml4j> <button type="submit" title="Cerrar sesión" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.2);font-size:16px;padding:4px;transition:color 0.2s;" onmouseover="this.style.color='#f87171'" onmouseout="this.style.color='rgba(255,255,255,0.2)'" data-astro-cid-2kanml4j>⏻</button> </form> </div> </div> </aside> <!-- Main --> <div class="main-wrap" data-astro-cid-2kanml4j> <!-- Topbar --> <header class="topbar" data-astro-cid-2kanml4j> <div data-astro-cid-2kanml4j> <h1 style="color:white;font-weight:700;font-size:18px;line-height:1.2;" data-astro-cid-2kanml4j>${title}</h1> <p style="color:rgba(255,255,255,0.2);font-size:11px;margin-top:2px;" data-astro-cid-2kanml4j> ${(/* @__PURE__ */ new Date()).toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long", year: "numeric" })} </p> </div> <div style="display:flex;align-items:center;gap:12px;" data-astro-cid-2kanml4j> <div style="display:flex;align-items:center;gap:6px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);padding:6px 12px;border-radius:100px;" data-astro-cid-2kanml4j> <span style="width:6px;height:6px;background:#4ade80;border-radius:50%;animation:pulse-glow 2s infinite;" data-astro-cid-2kanml4j></span> <span style="color:#4ade80;font-size:12px;font-weight:500;" data-astro-cid-2kanml4j>Sistema activo</span> </div> <a href="/admin/perfil" style="width:34px;height:34px;background:linear-gradient(135deg,#7c3aed,#ec4899);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;text-decoration:none;color:white;transition:transform 0.2s;box-shadow:0 4px 12px rgba(124,58,237,0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" data-astro-cid-2kanml4j> ${userInitial} </a> </div> </header> <!-- Content --> <main class="main-content" data-astro-cid-2kanml4j> ${renderSlot($$result, $$slots["default"])} </main> </div> </body></html>`;
+}, "C:/Users/Sat/OneDrive - SENATI/Desktop/Web de eventos + sistema de entradas y asistencia/eventos-app/src/layouts/AdminLayout.astro", void 0);
+
+export { $$AdminLayout as $ };
