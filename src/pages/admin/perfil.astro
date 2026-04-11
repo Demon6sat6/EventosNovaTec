@@ -6,9 +6,19 @@ const user = getSessionUser(Astro.cookies);
 const adminEmail  = user?.email  ?? 'admin@eventosapp.com';
 const adminNombre = user?.nombre ?? adminEmail;
 const adminRol    = user?.rol    ?? 'admin';
+
+const ok  = Astro.url.searchParams.get('ok')  ?? '';
+const err = Astro.url.searchParams.get('err') ?? '';
 ---
 <AdminLayout title="Mi Perfil">
   <div style="max-width:640px;display:flex;flex-direction:column;gap:20px;">
+
+    {ok && (
+      <div style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);color:#4ade80;font-size:13px;padding:12px 16px;border-radius:12px;">✅ {ok}</div>
+    )}
+    {err && (
+      <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#f87171;font-size:13px;padding:12px 16px;border-radius:12px;">⚠️ {err}</div>
+    )}
 
     <!-- Info cuenta -->
     <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:20px;overflow:hidden;">
@@ -29,22 +39,49 @@ const adminRol    = user?.rol    ?? 'admin';
       </div>
     </div>
 
-    <!-- Cambiar credenciales -->
+    <!-- Editar credenciales -->
     <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:20px;overflow:hidden;">
       <div style="padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(124,58,237,0.05);">
-        <p style="color:#a78bfa;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;">Cambiar credenciales</p>
+        <p style="color:#a78bfa;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;">Editar credenciales</p>
       </div>
-      <div style="padding:24px;">
-        <p style="color:rgba(255,255,255,0.4);font-size:13px;margin-bottom:16px;">
-          Las credenciales se gestionan desde el archivo <code style="background:rgba(255,255,255,0.06);color:#a78bfa;padding:2px 8px;border-radius:6px;font-size:12px;">.env</code> del proyecto.
-        </p>
-        <div style="background:#02020a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px;font-family:monospace;font-size:13px;line-height:2;">
-          <p style="color:rgba(255,255,255,0.2);font-size:11px;margin-bottom:4px;"># .env</p>
-          <p><span style="color:#a78bfa;">ADMIN_EMAIL</span><span style="color:rgba(255,255,255,0.3);">=</span><span style="color:#4ade80;">{adminEmail}</span></p>
-          <p><span style="color:#a78bfa;">ADMIN_PASSWORD</span><span style="color:rgba(255,255,255,0.3);">=</span><span style="color:rgba(255,255,255,0.2);">••••••••</span></p>
+      <form method="POST" action="/api/admin/perfil/actualizar" style="padding:24px;display:flex;flex-direction:column;gap:16px;">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <label style="display:block;color:rgba(255,255,255,0.35);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Nombre</label>
+            <input name="nombre" value={adminNombre}
+              style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:white;border-radius:10px;padding:10px 14px;font-size:13px;outline:none;font-family:inherit;box-sizing:border-box;transition:border-color 0.2s;"
+              onfocus="this.style.borderColor='rgba(124,58,237,0.6)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" />
+          </div>
+          <div>
+            <label style="display:block;color:rgba(255,255,255,0.35);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Email *</label>
+            <input type="email" name="email" required value={adminEmail}
+              style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:white;border-radius:10px;padding:10px 14px;font-size:13px;outline:none;font-family:inherit;box-sizing:border-box;transition:border-color 0.2s;"
+              onfocus="this.style.borderColor='rgba(124,58,237,0.6)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" />
+          </div>
         </div>
-        <p style="color:rgba(255,255,255,0.2);font-size:11px;margin-top:10px;">Edita el .env y reinicia el servidor para aplicar los cambios.</p>
-      </div>
+
+        <div>
+          <label style="display:block;color:rgba(255,255,255,0.35);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Contraseña actual *</label>
+          <input type="password" name="current_password" required placeholder="••••••••"
+            style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:white;border-radius:10px;padding:10px 14px;font-size:13px;outline:none;font-family:inherit;box-sizing:border-box;transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(124,58,237,0.6)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" />
+        </div>
+
+        <div>
+          <label style="display:block;color:rgba(255,255,255,0.35);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Nueva contraseña <span style="color:rgba(255,255,255,0.2);font-weight:400;text-transform:none;">(opcional)</span></label>
+          <input type="password" name="new_password" placeholder="Dejar vacío para no cambiar"
+            style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:white;border-radius:10px;padding:10px 14px;font-size:13px;outline:none;font-family:inherit;box-sizing:border-box;transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(124,58,237,0.6)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" />
+          <p style="color:rgba(255,255,255,0.2);font-size:11px;margin-top:4px;">Mínimo 6 caracteres</p>
+        </div>
+
+        <button type="submit"
+          style="align-self:flex-start;background:linear-gradient(135deg,#7c3aed,#ec4899);color:white;font-weight:700;font-size:13px;padding:11px 24px;border-radius:10px;border:none;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(124,58,237,0.3);transition:transform 0.2s;"
+          onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+          Guardar cambios
+        </button>
+      </form>
     </div>
 
     <!-- Cerrar sesión -->
