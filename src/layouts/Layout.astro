@@ -242,6 +242,14 @@ const { title } = Astro.props;
     </footer>
 
     <script>
+      // Splash screen
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const splash = document.getElementById('splash');
+          if (splash) splash.classList.add('hidden');
+        }, 1500);
+      });
+
       const navbar   = document.getElementById('navbar');
       const hamburger = document.getElementById('hamburger');
       const menu     = document.getElementById('mobileMenu');
