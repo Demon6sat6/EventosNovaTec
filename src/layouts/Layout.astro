@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
-interface Props { title: string; }
-const { title } = Astro.props;
+interface Props { title: string; description?: string; }
+const { title, description } = Astro.props;
 ---
 <!doctype html>
 <html lang="es">
@@ -9,7 +9,21 @@ const { title } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title} | EventosApp</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    {description && <meta name="description" content={description} />}
+
+    <!-- Preconnect para fonts (no bloquea render) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Fonts con media=print trick: no bloquea render -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    </noscript>
+
+    <!-- Preload logo -->
+    <link rel="preload" href="/logo.png" as="image" />
+
     <slot name="head" />
     <style>
       /* ── Navbar ── */
@@ -39,24 +53,16 @@ const { title } = Astro.props;
 
       /* ── Pasos grid ── */
       .pasos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
-      @media (max-width: 900px) {
-        .pasos-grid { grid-template-columns: repeat(2, 1fr); }
-      }
-      @media (max-width: 500px) {
-        .pasos-grid { grid-template-columns: 1fr; }
-      }
+      @media (max-width: 900px) { .pasos-grid { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 500px) { .pasos-grid { grid-template-columns: 1fr; } }
 
       /* ── Evento detalle ── */
       .evento-grid { display: grid; grid-template-columns: 1fr 380px; gap: 40px; align-items: start; }
-      @media (max-width: 900px) {
-        .evento-grid { grid-template-columns: 1fr; }
-      }
+      @media (max-width: 900px) { .evento-grid { grid-template-columns: 1fr; } }
 
       /* ── Meta info grid ── */
       .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-      @media (max-width: 480px) {
-        .meta-grid { grid-template-columns: 1fr; }
-      }
+      @media (max-width: 480px) { .meta-grid { grid-template-columns: 1fr; } }
 
       /* ── Sección padding ── */
       .section-pad { padding: 120px 0; }
@@ -68,12 +74,10 @@ const { title } = Astro.props;
 
       /* ── Hero padding ── */
       .hero-pad { padding: 0 40px 48px; }
-      @media (max-width: 768px) {
-        .hero-pad { padding: 0 20px 36px; }
-      }
+      @media (max-width: 768px) { .hero-pad { padding: 0 20px 36px; } }
 
       /* ── Stats row ── */
-      .stats-row { display: flex; gap: 0; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; overflow: hidden; backdrop-filter: blur(10px); background: rgba(255,255,255,0.02); }
+      .stats-row { display: flex; gap: 0; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; overflow: hidden; background: rgba(255,255,255,0.02); }
       @media (max-width: 400px) {
         .stats-row { flex-direction: column; }
         .stats-row > div { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.06); }
@@ -97,116 +101,65 @@ const { title } = Astro.props;
 
       /* ── Mis entradas form ── */
       .mis-entradas-form { display: flex; gap: 10px; }
-      @media (max-width: 480px) {
-        .mis-entradas-form { flex-direction: column; }
-      }
+      @media (max-width: 480px) { .mis-entradas-form { flex-direction: column; } }
 
       /* ── Countdown ── */
       .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-      @media (max-width: 360px) {
-        .countdown-grid { grid-template-columns: repeat(2, 1fr); }
-      }
+      @media (max-width: 360px) { .countdown-grid { grid-template-columns: repeat(2, 1fr); } }
 
       /* ── Footer ── */
       .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
-      @media (max-width: 480px) {
-        .footer-inner { flex-direction: column; text-align: center; }
-      }
-    </style>
+      @media (max-width: 480px) { .footer-inner { flex-direction: column; text-align: center; } }
 
-    <style>
+      /* ── Reducir animaciones en móvil ── */
+      @media (max-width: 768px) {
+        .float, .float2, .float3 { animation: none !important; }
+        .card-3d { transition: none !important; will-change: auto !important; }
+        .shimmer-text { animation: none !important; }
+        .scan-line { display: none !important; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      }
+
+      /* ── Splash ── */
       #splash {
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
+        position: fixed; inset: 0; z-index: 9999;
         background: #02020a;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 32px;
-        transition: opacity 0.7s ease, visibility 0.7s ease;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
       }
-      #splash.hidden {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-      }
-
-      /* Círculo con logo */
+      #splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
       .splash-circle {
-        width: 160px;
-        height: 160px;
-        border-radius: 50%;
+        width: 140px; height: 140px; border-radius: 50%;
         background: linear-gradient(135deg, #0d1426, #1a0a2e);
         border: 2px solid rgba(124,58,237,0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: flex; align-items: center; justify-content: center;
         position: relative;
-        box-shadow: 0 0 60px rgba(124,58,237,0.25), inset 0 0 40px rgba(124,58,237,0.05);
-        animation: splashPulse 2s ease-in-out infinite;
+        box-shadow: 0 0 50px rgba(124,58,237,0.2);
       }
-      .splash-circle img {
-        width: 110px;
-        height: 110px;
-        object-fit: contain;
-        border-radius: 50%;
-        image-rendering: -webkit-optimize-contrast;
-      }
-
-      /* Anillo giratorio */
+      .splash-circle img { width: 96px; height: 96px; object-fit: contain; border-radius: 50%; }
       .splash-ring {
-        position: absolute;
-        inset: -8px;
-        border-radius: 50%;
+        position: absolute; inset: -8px; border-radius: 50%;
         border: 2px solid transparent;
-        border-top-color: #7c3aed;
-        border-right-color: #ec4899;
-        animation: splashSpin 1.2s linear infinite;
+        border-top-color: #7c3aed; border-right-color: #ec4899;
+        animation: splashSpin 1s linear infinite;
       }
-
-      @keyframes splashSpin {
-        to { transform: rotate(360deg); }
-      }
-      @keyframes splashPulse {
-        0%, 100% { box-shadow: 0 0 40px rgba(124,58,237,0.2), inset 0 0 30px rgba(124,58,237,0.04); }
-        50%       { box-shadow: 0 0 80px rgba(124,58,237,0.5), inset 0 0 50px rgba(124,58,237,0.08); }
-      }
-
-      /* Barra de carga */
-      .splash-bar-wrap {
-        width: 160px;
-        height: 2px;
-        background: rgba(255,255,255,0.06);
-        border-radius: 100px;
-        overflow: hidden;
-      }
-      .splash-bar {
-        height: 100%;
-        width: 0%;
-        background: linear-gradient(90deg, #2563eb, #7c3aed, #ec4899);
-        border-radius: 100px;
-        animation: splashLoad 1.4s ease forwards;
-      }
-      @keyframes splashLoad {
-        0%   { width: 0%; }
-        60%  { width: 80%; }
-        100% { width: 100%; }
-      }
+      .splash-bar-wrap { width: 140px; height: 2px; background: rgba(255,255,255,0.06); border-radius: 100px; overflow: hidden; }
+      .splash-bar { height: 100%; width: 0%; background: linear-gradient(90deg,#2563eb,#7c3aed,#ec4899); border-radius: 100px; animation: splashLoad 1.2s ease forwards; }
+      @keyframes splashSpin { to { transform: rotate(360deg); } }
+      @keyframes splashLoad { 0%{width:0%} 60%{width:80%} 100%{width:100%} }
     </style>
   </head>
-  <body style="font-family:'Space Grotesk',sans-serif;">
+  <body style="font-family:'Space Grotesk',system-ui,sans-serif;">
 
     <!-- Splash screen -->
-    <div id="splash">
+    <div id="splash" aria-hidden="true">
       <div class="splash-circle">
         <div class="splash-ring"></div>
-        <img src="/logo.png" alt="NovaTec Events" />
+        <img src="/logo.png" alt="" width="96" height="96" />
       </div>
-      <div class="splash-bar-wrap">
-        <div class="splash-bar"></div>
-      </div>
+      <div class="splash-bar-wrap"><div class="splash-bar"></div></div>
     </div>
 
     <!-- Navbar -->
@@ -214,7 +167,8 @@ const { title } = Astro.props;
       <div style="max-width:1280px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;">
 
         <a href="/" style="display:flex;align-items:center;text-decoration:none;flex-shrink:0;">
-          <img src="/logo.png" alt="NovaTec Events" style="height:42px;width:42px;border-radius:50%;object-fit:cover;display:block;box-shadow:0 0 16px rgba(124,58,237,0.4);" />
+          <img src="/logo.png" alt="NovaTec Events" width="42" height="42"
+            style="height:42px;width:42px;border-radius:50%;object-fit:cover;display:block;box-shadow:0 0 16px rgba(124,58,237,0.4);" />
         </a>
 
         <!-- Desktop links -->
