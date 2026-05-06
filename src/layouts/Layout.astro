@@ -124,26 +124,57 @@ const { title } = Astro.props;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 28px;
-        transition: opacity 0.6s ease, visibility 0.6s ease;
+        gap: 32px;
+        transition: opacity 0.7s ease, visibility 0.7s ease;
       }
       #splash.hidden {
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
       }
-      #splash img {
-        width: 220px;
-        height: auto;
+
+      /* Círculo con logo */
+      .splash-circle {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0d1426, #1a0a2e);
+        border: 2px solid rgba(124,58,237,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-shadow: 0 0 60px rgba(124,58,237,0.25), inset 0 0 40px rgba(124,58,237,0.05);
+        animation: splashPulse 2s ease-in-out infinite;
+      }
+      .splash-circle img {
+        width: 110px;
+        height: 110px;
+        object-fit: contain;
+        border-radius: 50%;
         image-rendering: -webkit-optimize-contrast;
-        image-rendering: crisp-edges;
-        filter: drop-shadow(0 0 40px rgba(124,58,237,0.5));
-        animation: splashPulse 1.5s ease-in-out infinite;
+      }
+
+      /* Anillo giratorio */
+      .splash-ring {
+        position: absolute;
+        inset: -8px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        border-top-color: #7c3aed;
+        border-right-color: #ec4899;
+        animation: splashSpin 1.2s linear infinite;
+      }
+
+      @keyframes splashSpin {
+        to { transform: rotate(360deg); }
       }
       @keyframes splashPulse {
-        0%, 100% { filter: drop-shadow(0 0 30px rgba(124,58,237,0.4)); }
-        50%       { filter: drop-shadow(0 0 60px rgba(124,58,237,0.8)); }
+        0%, 100% { box-shadow: 0 0 40px rgba(124,58,237,0.2), inset 0 0 30px rgba(124,58,237,0.04); }
+        50%       { box-shadow: 0 0 80px rgba(124,58,237,0.5), inset 0 0 50px rgba(124,58,237,0.08); }
       }
+
+      /* Barra de carga */
       .splash-bar-wrap {
         width: 160px;
         height: 2px;
