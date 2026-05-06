@@ -200,7 +200,10 @@ const { title } = Astro.props;
 
     <!-- Splash screen -->
     <div id="splash">
-      <img src="/logo.png" alt="NovaTec Events" />
+      <div class="splash-circle">
+        <div class="splash-ring"></div>
+        <img src="/logo.png" alt="NovaTec Events" />
+      </div>
       <div class="splash-bar-wrap">
         <div class="splash-bar"></div>
       </div>
@@ -211,7 +214,7 @@ const { title } = Astro.props;
       <div style="max-width:1280px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;">
 
         <a href="/" style="display:flex;align-items:center;text-decoration:none;flex-shrink:0;">
-          <img src="/logo.png" alt="NovaTec Events" style="height:42px;width:auto;display:block;" />
+          <img src="/logo.png" alt="NovaTec Events" style="height:42px;width:42px;border-radius:50%;object-fit:cover;display:block;box-shadow:0 0 16px rgba(124,58,237,0.4);" />
         </a>
 
         <!-- Desktop links -->
